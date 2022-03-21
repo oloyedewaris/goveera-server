@@ -44,7 +44,6 @@ exports.createPost = (req, res) => {
 
 //get posts
 exports.getPosts = (req, res) => {
-  console.log('here')
   let count
   Post.countDocuments({ company: req.user.company }, (err, postCount) => count = postCount);
   Post.find({ company: req.user.company })
