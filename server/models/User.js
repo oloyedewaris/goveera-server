@@ -56,6 +56,10 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
+  justCreated: {
+    type: Boolean,
+    default: true
+  },
   notifications: {
     type: [NotificationSchema]
   },

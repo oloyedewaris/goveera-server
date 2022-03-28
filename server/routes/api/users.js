@@ -31,6 +31,12 @@ router.get("/search", auth, usersCntrl.searchUser);
 //@access --protected
 router.get("/clear_notifications", auth, usersCntrl.clearNotfications);
 
+//@route get--api/users/clear_just_created
+//@description --clear user's just_created
+//@access --protected
+router.get("/clear_just_created", auth, usersCntrl.clearJustCreated);
+
+
 //@route get--api/users/save
 //@description --save a user item
 //@access --protected

@@ -6,7 +6,7 @@ const Project = require("../../models/Project");
 const Poll = require("../../models/Poll");
 
 
-// // Users Controllers // //
+// // Users Controllers // // 
 
 exports.getAllUsers = (req, res) => {
   let userCount
@@ -58,6 +58,18 @@ exports.searchUser = (req, res) => {
     .catch(err => {
       return res.status(400).json(err)
     });
+}
+
+exports.clearJustCreated = (req, res) => {
+  User.findByIdAndUpdate(
+    req.user._id,
+    { $set: { "justCreated": false } },
+    { new: true, populate: { path: 'company' } },
+    (err, user) => {
+      if (err) return res.status(400).json(err)
+      res.status(200).json(user)
+    }
+  )
 }
 
 exports.clearNotfications = (req, res) => {
