@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server/server.js",
-    "server": "nodemon server/server.js"
+    "server": "nodemon server/server.js",
+    "dev": "concurrently \"npm run server\" \"cd ../client && npm start\" "
   },
   "author": "Waris",
   "license": "ISC",
