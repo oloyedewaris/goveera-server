@@ -34,7 +34,7 @@ exports.createPost = (req, res) => {
       Post.find({ company: req.user.company })
         .populate("author")
         .populate("comments.commenter")
-        .sort({ isAnnouncement: -1, timestamp: -1 })
+        .sort({ timestamp: -1 })
         .limit(Number(req.query.limit))
         .then(posts => res.status(200).json({ count, posts }))
         .catch(err => res.status(400).json(err));
@@ -49,7 +49,7 @@ exports.getPosts = (req, res) => {
   Post.find({ company: req.user.company })
     .populate("author")
     .populate("comments.commenter")
-    .sort({ isAnnouncement: -1, timestamp: -1 })
+    .sort({ timestamp: -1 })
     .limit(Number(req.query.limit))
     .then(posts => res.status(200).json({ count, posts }))
     .catch(err => res.status(400).json(err));
@@ -60,7 +60,7 @@ exports.findPost = (req, res) => {
   Post.findById(req.params.id)
     .populate("author")
     .populate("comments.commenter")
-    .sort({ isAnnouncement: -1, timestamp: -1 })
+    .sort({ timestamp: -1 })
     .then(post => res.status(200).json(post))
     .catch(err => res.status(400).json(err));
 };
@@ -75,7 +75,7 @@ exports.deletePost = (req, res) => {
       Post.find({ company: req.user.company })
         .populate("author")
         .populate("comments.commenter")
-        .sort({ isAnnouncement: -1, timestamp: -1 })
+        .sort({ timestamp: -1 })
         .limit(Number(req.query.limit))
         .then(posts => res.status(200).json({ count, posts }))
         .catch(err => res.status(400).json(err));
@@ -119,7 +119,7 @@ exports.updatePost = (req, res) => {
         Post.find({ company: req.user.company })
           .populate("author")
           .populate("comments.commenter")
-          .sort({ isAnnouncement: -1, timestamp: -1 })
+          .sort({ timestamp: -1 })
           .limit(Number(req.query.limit))
           .then(posts => res.status(200).json({ count, posts }))
           .catch(err => res.status(400).json(err));
@@ -144,7 +144,7 @@ exports.updatePost = (req, res) => {
         Post.find({ company: req.user.company })
           .populate("author")
           .populate("comments.commenter")
-          .sort({ isAnnouncement: -1, timestamp: -1 })
+          .sort({ timestamp: -1 })
           .limit(Number(req.query.limit))
           .then(posts => res.status(200).json({ count, posts }))
           .catch(err => res.status(400).json(err));
@@ -189,7 +189,7 @@ exports.updatePost = (req, res) => {
         Post.find({ company: req.user.company })
           .populate("author")
           .populate("comments.commenter")
-          .sort({ isAnnouncement: -1, timestamp: -1 })
+          .sort({ timestamp: -1 })
           .limit(Number(req.query.limit))
           .then(posts => res.status(200).json({ count, posts }))
           .catch(err => res.status(400).json(err));
@@ -216,7 +216,7 @@ exports.updatePost = (req, res) => {
         Post.find({ company: req.user.company })
           .populate("author")
           .populate("comments.commenter")
-          .sort({ isAnnouncement: -1, timestamp: -1 })
+          .sort({ timestamp: -1 })
           .limit(Number(req.query.limit))
           .then(posts => res.status(200).json({ count, posts }))
           .catch(err => res.status(400).json(err));
