@@ -3,7 +3,7 @@
 const express = require("express");
 const Project = require("../../models/Project");
 const auth = require("../../middleWare/auth");
-const projectsController = require("../../controllers/projects/projects");
+const projectsController = require("../../controllers/projects");
 
 const router = express.Router();
 

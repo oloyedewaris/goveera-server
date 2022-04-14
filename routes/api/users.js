@@ -1,5 +1,5 @@
 const express = require("express");
-const usersCntrl = require("../../controllers/users/users");
+const usersCntrl = require("../../controllers/users");
 const router = express.Router();
 
 const auth = require("../../middleWare/auth");
@@ -10,6 +10,12 @@ const auth = require("../../middleWare/auth");
 //@description --get all users
 //@access --protected
 router.get("/", auth, usersCntrl.getAllUsers);
+
+
+//@route --get api/users/posts
+//@description --get all user's posts
+//@access --protected
+router.get("/posts/:id", auth, usersCntrl.getUserPosts);
 
 //@route --get api/users
 //@description --get users in a company

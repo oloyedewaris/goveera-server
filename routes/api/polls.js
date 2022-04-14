@@ -3,7 +3,7 @@
 const express = require("express");
 const Poll = require("../../models/Poll");
 const auth = require("../../middleWare/auth");
-const pollsController = require("../../controllers/polls/polls");
+const pollsController = require("../../controllers/polls");
 
 const router = express.Router();
 
@@ -13,6 +13,11 @@ const router = express.Router();
 //@description --Make a New Poll
 //@access --private
 router.post("/", auth, pollsController.createPoll);
+
+//@route-- find api/polls/:id
+//@description --Find a poll
+//@access --private
+router.get("/:id", auth, pollsController.findPoll);
 
 //@route-- delete api/polls/:id
 //@description --Delete an Existing Poll

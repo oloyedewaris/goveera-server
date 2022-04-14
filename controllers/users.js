@@ -1,12 +1,44 @@
 const bcrypt = require("bcryptjs")
 const mongoose = require("mongoose");
-const User = require("../../models/User");
-const Post = require("../../models/Post");
-const Project = require("../../models/Project");
-const Poll = require("../../models/Poll");
+const User = require("../models/User");
+const Post = require("../models/Post");
+const Project = require("../models/Project");
+const Poll = require("../models/Poll");
 
 
-// // Users Controllers // // 
+// // Users Controllers // //
+
+
+//get all user's posts
+exports.getUserPosts = async (req, res) => {
+  const userId = req.params.id
+  try {
+    const postCount = await Post.countDocuments({ author: userId });
+    const pollCount = await Poll.countDocuments({ surveyor: userId });
+    const projectCount = await Project.countDocuments({ initiator: userId });
+    const count = postCount + pollCount + projectCount
+    const posts = await Post.find({ author: userId })
+      .populate("author")
+      .populate("comments.commenter")
+      .exec()
+    const polls = await Poll.find({ surveyor: userId })
+      .populate("surveyor")
+      .populate("comments.commenter")
+      .exec()
+    const projects = await Project.find({ initiator: userId })
+      .populate("surveyor")
+      .populate("comments.commenter")
+      .exec()
+    let allPosts = [...posts, ...polls, ...projects].sort((a, b) => (b.timestamp - a.timestamp))
+    if (req.query.limit) {
+      console.log(req.query.limit)
+      allPosts = allPosts.slice(0, Number(req.query.limit))
+    }
+    return res.status(200).json({ count, allPosts })
+  } catch (err) {
+    return res.status(400).json(err)
+  }
+}
 
 exports.getAllUsers = (req, res) => {
   let userCount

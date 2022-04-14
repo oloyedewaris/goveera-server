@@ -1,5 +1,5 @@
-const Company = require("../../models/Company");
-const User = require("../../models/User");
+const Company = require("../models/Company");
+const User = require("../models/User");
 
 exports.createCompany = (req, res) => {
   const { name, userId, address, about } = req.body;

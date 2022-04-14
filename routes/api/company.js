@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const companyController = require("../../controllers/company/company");
+const companyController = require("../../controllers/company");
 
 //@route --post api/company/createCompany
 //@description --create a new company

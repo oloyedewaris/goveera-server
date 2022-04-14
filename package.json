@@ -4,8 +4,8 @@
   "description": "Governance application built with the mern stack",
   "main": "server.js",
   "scripts": {
-    "start": "node server/server.js",
-    "server": "nodemon server/server.js",
+    "start": "node app.js",
+    "server": "nodemon app.js",
     "dev": "concurrently \"npm run server\" \"cd ../client && npm start\" "
   },
   "author": "Waris",
