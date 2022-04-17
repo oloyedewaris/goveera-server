@@ -75,20 +75,21 @@ exports.updateProject = (req, res) => {
       .populate("comments.commenter")
       .exec()
       .then(project => {
-        console.log(project)
-        const notification = {
-          type: "support",
-          title: "New support",
-          body: `${req.user.firstName} ${req.user.lastName} supported your project`,
-          time: Date.now(),
-          link: `/project/${project._id}`
-        }
-        if (req.user._id.toString() !== project.initiator.toString()) {
+        if (req.user._id.toString() !== project.initiator._id.toString()) {
+          const notification = {
+            type: "support",
+            title: "New support",
+            body: `${req.user.firstName} ${req.user.lastName} supported your project`,
+            time: Date.now(),
+            link: `/project/${project._id}`
+          }
           User.findByIdAndUpdate(
             project.initiator,
             { $push: { notifications: notification } },
             { new: true },
-            (err, data) => console.log(err, data)
+            (err, data) => {
+              if (err) throw err
+            }
           )
         }
         return res.status(200).json({ success: true, project })
@@ -111,19 +112,21 @@ exports.updateProject = (req, res) => {
       .populate("initiator")
       .populate("comments.commenter")
       .then(project => {
-        const notification = {
-          type: "support",
-          title: "New support",
-          body: `${req.user.firstName} ${req.user.lastName} opposed your project`,
-          time: Date.now(),
-          link: `/project/${project._id}`
-        }
-        if (req.user._id.toString() !== project.initiator.toString()) {
+        if (req.user._id.toString() !== project.initiator._id.toString()) {
+          const notification = {
+            type: "support",
+            title: "New support",
+            body: `${req.user.firstName} ${req.user.lastName} opposed your project`,
+            time: Date.now(),
+            link: `/project/${project._id}`
+          }
           User.findByIdAndUpdate(
             project.initiator,
             { $push: { notifications: notification } },
             { new: true },
-            (err, data) => console.log(err, data)
+            (err, data) => {
+              if (err) throw err
+            }
           )
         }
         return res.status(200).json({ success: true, project })
@@ -157,20 +160,21 @@ exports.updateProject = (req, res) => {
       .populate('comments.commenter')
       .exec()
       .then(project => {
-        const notification = {
-          type: "comment",
-          title: "New comment",
-          body: `${req.user.firstName} ${req.user.lastName} commented on your project`,
-          time: Date.now(),
-          link: `/project/${project._id}`
-        }
-
-        if (req.user._id.toString() !== project.initiator.toString()) {
+        if (req.user._id.toString() !== project.initiator._id.toString()) {
+          const notification = {
+            type: "comment",
+            title: "New comment",
+            body: `${req.user.firstName} ${req.user.lastName} commented on your project`,
+            time: Date.now(),
+            link: `/project/${project._id}`
+          }
           User.findByIdAndUpdate(
             project.initiator,
             { $push: { notifications: notification } },
             { new: true },
-            (err, data) => console.log(err, data)
+            (err, data) => {
+              if (err) throw err
+            }
           )
         }
         return res.status(200).json({ success: true, project })

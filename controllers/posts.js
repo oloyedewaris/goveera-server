@@ -60,7 +60,6 @@ exports.getPosts = async (req, res) => {
       .exec()
     let allPosts = [...posts, ...polls, ...projects].sort((a, b) => (b.timestamp - a.timestamp))
     if (req.query.limit) {
-      console.log(req.query.limit)
       allPosts = allPosts.slice(0, Number(req.query.limit))
     }
     return res.status(200).json({ count, allPosts })
@@ -102,19 +101,21 @@ exports.updatePost = (req, res) => {
       .populate("comments.commenter")
       .exec()
       .then(post => {
-        const notification = {
-          type: "like",
-          title: "New like",
-          body: `${req.user.firstName} ${req.user.lastName} just liked your post`,
-          time: Date.now(),
-          link: `/post/${post._id}`
-        }
-        if (req.user._id.toString() !== post.author.toString()) {
+        if (req.user._id.toString() !== post.author._id.toString()) {
+          const notification = {
+            type: "like",
+            title: "New like",
+            body: `${req.user.firstName} ${req.user.lastName} just liked your post`,
+            time: Date.now(),
+            link: `/post/${post._id}`
+          }
           User.findByIdAndUpdate(
             post.author,
             { $push: { notifications: notification } },
             { new: true },
-            (err, data) => console.log(err, data)
+            (err, data) => {
+              if (err) throw err
+            }
           )
         }
         return res.status(200).json({ success: true, post })
@@ -149,7 +150,7 @@ exports.updatePost = (req, res) => {
       .populate("comments.commenter")
       .exec()
       .then(post => {
-        if (req.user._id.toString() !== post.author.toString()) {
+        if (req.user._id.toString() !== post.author._id.toString()) {
           const notification = {
             type: "comment",
             title: "New comment",
@@ -161,7 +162,9 @@ exports.updatePost = (req, res) => {
             post.author,
             { $push: { notifications: notification } },
             { new: true },
-            (err, data) => console.log(err, data)
+            (err, data) => {
+              if (err) throw err
+            }
           )
         }
         return res.status(200).json({ success: true, post })

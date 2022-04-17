@@ -47,7 +47,7 @@ exports.registerUser = (req, res) => {
       { $push: { notifications: notification } },
       { new: true },
       (err, users) => {
-        console.log(err, users)
+        if (err) throw err
       }
     )
   }

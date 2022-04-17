@@ -31,7 +31,6 @@ exports.getUserPosts = async (req, res) => {
       .exec()
     let allPosts = [...posts, ...polls, ...projects].sort((a, b) => (b.timestamp - a.timestamp))
     if (req.query.limit) {
-      console.log(req.query.limit)
       allPosts = allPosts.slice(0, Number(req.query.limit))
     }
     return res.status(200).json({ count, allPosts })

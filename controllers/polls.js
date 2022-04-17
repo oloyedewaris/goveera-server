@@ -6,12 +6,13 @@ const User = require("../models/User");
 //creates a new poll
 exports.createPoll = (req, res) => {
   const { options, question } = req.body;
-  console.log(req.body);
+
+  const newOptions = options.map(option => ({ optionName: option, voters: [] }))
 
   const newPoll = new Poll({
     company: req.user.company,
     surveyor: req.user._id,
-    options,
+    options: newOptions,
     question,
     postedTime: Date.now(),
     timestamp: new Date().getTime()
@@ -20,7 +21,6 @@ exports.createPoll = (req, res) => {
   newPoll
     .save()
     .then(poll => {
-      console.log('poll', poll)
       poll.populate(["surveyor", "comments.commenter"]).execPopulate()
         .then(poll => res.status(200).json({ success: true, poll }))
         .catch(err => res.status(400).json(err));
@@ -77,20 +77,21 @@ exports.updatePoll = (req, res) => {
       .populate("comments.commenter")
       .exec()
       .then(poll => {
-        const notification = {
-          type: "vote",
-          title: "New vote",
-          body: `${req.user.firstName} ${req.user.lastName} voted in your poll`,
-          time: Date.now(),
-          link: `/poll/${poll._id}`
-        }
-
-        if (req.user._id.toString() !== poll.surveyor.toString()) {
+        if (req.user._id.toString() !== poll.surveyor._id.toString()) {
+          const notification = {
+            type: "vote",
+            title: "New vote",
+            body: `${req.user.firstName} ${req.user.lastName} voted in your poll`,
+            time: Date.now(),
+            link: `/poll/${poll._id}`
+          }
           User.findByIdAndUpdate(
             poll.surveyor,
             { $push: { notifications: notification } },
             { new: true },
-            (err, data) => console.log(err, data)
+            (err, data) => {
+              if (err) throw err
+            }
           )
         }
         return res.status(200).json({ success: true, poll })
@@ -104,19 +105,21 @@ exports.updatePoll = (req, res) => {
       .populate("comments.commenter")
       .exec()
       .then(poll => {
-        const notification = {
-          type: "like",
-          title: "New like",
-          body: `${req.user.firstName} ${req.user.lastName} just liked your poll`,
-          time: Date.now(),
-          link: `/poll/${poll._id}`
-        }
-        if (req.user._id.toString() !== poll.surveyor.toString()) {
+        if (req.user._id.toString() !== poll.surveyor._id.toString()) {
+          const notification = {
+            type: "like",
+            title: "New like",
+            body: `${req.user.firstName} ${req.user.lastName} just liked your poll`,
+            time: Date.now(),
+            link: `/poll/${poll._id}`
+          }
           User.findByIdAndUpdate(
             poll.surveyor,
             { $push: { notifications: notification } },
             { new: true },
-            (err, data) => console.log(err, data)
+            (err, data) => {
+              if (err) throw err
+            }
           )
         }
         return res.status(200).json({ success: true, poll })
@@ -151,19 +154,21 @@ exports.updatePoll = (req, res) => {
       .populate("comments.commenter")
       .exec()
       .then(poll => {
-        const notification = {
-          type: "comment",
-          title: "New comment",
-          body: `${req.user.firstName} ${req.user.lastName} commented on your poll`,
-          time: Date.now(),
-          link: `/poll/${poll._id}`
-        }
-        if (req.user._id.toString() !== poll.surveyor.toString()) {
+        if (req.user._id.toString() !== poll.surveyor._id.toString()) {
+          const notification = {
+            type: "comment",
+            title: "New comment",
+            body: `${req.user.firstName} ${req.user.lastName} commented on your poll`,
+            time: Date.now(),
+            link: `/poll/${poll._id}`
+          }
           User.findByIdAndUpdate(
             poll.surveyor,
             { $push: { notifications: notification } },
             { new: true },
-            (err, data) => console.log(err, data)
+            (err, data) => {
+              if (err) throw err
+            }
           )
         }
         return res.status(200).json({ success: true, poll })
