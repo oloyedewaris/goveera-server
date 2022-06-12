@@ -16,6 +16,24 @@ exports.registerUser = (req, res) => {
   firstName.charAt(0).toUpperCase()
   lastName.charAt(0).toUpperCase()
 
+  //send a notification to all other users
+  const joinedNotification = {
+    type: "welcome",
+    title: "New user",
+    body: `${firstName} ${lastName} just joined your company`,
+    time: Date.now(),
+    link: "/"
+  }
+
+  //notofication to welcome user
+  const welcomeNotification = {
+    type: "welcome",
+    title: `Welcome ${firstName}`,
+    body: "We are pleased to welcome you to Goveera, as we are looking forward to help your organization grow in terms of communications and interaction",
+    time: Date.now(),
+    link: "/home"
+  }
+
   // Simple validation
   if (!firstName || !lastName || !email || !password || !role)
     return res.status(400).json("Please enter all field");
@@ -33,18 +51,9 @@ exports.registerUser = (req, res) => {
   if (company) {
     company = mongoose.Types.ObjectId(company)
 
-    //send a notification to all other users
-    const notification = {
-      type: "welcome",
-      title: "New user",
-      body: `${firstName} ${lastName} just joined your company`,
-      time: Date.now(),
-      link: "/"
-    }
-
     User.updateMany(
       { "company": company },
-      { $push: { notifications: notification } },
+      { $push: { notifications: joinedNotification } },
       { new: true },
       (err, users) => {
         if (err) throw err
@@ -56,14 +65,6 @@ exports.registerUser = (req, res) => {
   User.findOne({ email }).then((user) => {
     if (user) return res.status(400).json("Email already exist");
 
-    const notification = {
-      type: "welcome",
-      title: `Welcome ${firstName}`,
-      body: "We are pleased to welcome you to Goveera, as we are looking forward to help your organization grow in terms of communications and interaction",
-      time: Date.now(),
-      link: "/home"
-    }
-
     //Create a new user
     const newUser = new User({
       role,
@@ -74,7 +75,7 @@ exports.registerUser = (req, res) => {
       email,
       password,
       registeredAt: date,
-      notifications: [notification]
+      notifications: [welcomeNotification]
     });
 
     //Hash the user's password
@@ -90,21 +91,15 @@ exports.registerUser = (req, res) => {
             jwt.sign({ id: savedUser._id }, "waris", { expiresIn: 36000000 },
               (err, token) => {
                 if (err) throw err;
-                return User.findById(savedUser._id)
+                User.findById(savedUser._id)
                   .select("-password")
                   .populate('company')
-                  .then((user) =>
-                    res.status(201).json({
-                      token,
-                      user
-                    })
-                  );
+                  .then((user) => res.status(201).json({ token, user }))
+                  .catch(err => res.status(400).json({ msg: "failed to sign jwt", error: err }));
               }
             );
           })
-          .catch((err) =>
-            res.status(400).json({ msg: "failed", error: err })
-          );
+          .catch(err => res.status(400).json({ msg: "failed to hash password", error: err }));
       });
     });
   });
