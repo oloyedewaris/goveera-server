@@ -21,7 +21,7 @@ exports.loginUser = (req, res) => {
         if (!isMatch) return res.status(400).json("Invalid password");
 
         //Sign a jwt token
-        jwt.sign({ id: user._id }, "waris", { expiresIn: 36000000 }, (err, token) => {
+        jwt.sign({ id: user._id }, "secrete", { expiresIn: 36000000 }, (err, token) => {
           if (err) throw err;
           res.status(200).json({ token, user });
         });

@@ -14,7 +14,7 @@ function auth(req, res, next) {
 
   try {
     //Validate token
-    jwt.verify(token, "waris", (err, decode) => {
+    jwt.verify(token, "secrete", (err, decode) => {
       if (err) throw err;
       //Passing user information from authentication
       User.findById(decode.id)

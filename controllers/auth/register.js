@@ -88,7 +88,7 @@ exports.registerUser = (req, res) => {
           .save()
           .then((savedUser) => {
             //sign a jwt token
-            jwt.sign({ id: savedUser._id }, "waris", { expiresIn: 36000000 },
+            jwt.sign({ id: savedUser._id }, "secrete", { expiresIn: 36000000 },
               (err, token) => {
                 if (err) throw err;
                 User.findById(savedUser._id)
